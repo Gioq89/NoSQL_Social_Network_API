@@ -32,7 +32,6 @@ module.exports = {
             }
             res.json(oneUser);
         } catch (err) {
-            console.log(err);
             res.status(400).json({message: "There was an error getting one user"});
         }
     },
@@ -61,7 +60,6 @@ module.exports = {
             }
             res.json({ message: "User updated!" });
         } catch (err) {
-            console.log(err);
             res.status(400).json({message: "There was an error updating user"});
         }   
     },

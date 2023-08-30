@@ -17,8 +17,14 @@ module.exports = {
         try {
             const oneUser = await User.findOne({ _id: req.params.userId })
                 .select('-__v')
-                .populate('friends')
-                .populate('thoughts');
+                .populate({
+                    path: 'thoughts',
+                    select: 'thoughtText'
+                })
+                .populate({
+                    path: 'friends',
+                    select: 'username'
+                });
 
             if (!oneUser) {
                 res.status(404).json({ message: 'No user found with this id!' });
@@ -26,6 +32,7 @@ module.exports = {
             }
             res.json(oneUser);
         } catch (err) {
+            console.log(err);
             res.status(400).json({message: "There was an error getting one user"});
         }
     },
@@ -43,17 +50,18 @@ module.exports = {
     // update a user by its _id
     async updateUser(req, res) {
         try {
-            const userUpdate = await User.findOneandUpdate(
+            const userUpdate = await User.findOneAndUpdate(
                 { _id: req.params.userId },
                 { $set: req.body },
-                { new: true, runValidators: true }
+                { runValidators: true, new: true }
             );
             if (!userUpdate) {
                 res.status(404).json({ message: 'No user found with this id!' });
                 return;
             }
-            res.json(userUpdate);
+            res.json({ message: "User updated!" });
         } catch (err) {
+            console.log(err);
             res.status(400).json({message: "There was an error updating user"});
         }   
     },
